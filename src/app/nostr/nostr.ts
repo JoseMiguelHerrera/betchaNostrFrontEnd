@@ -5,6 +5,14 @@ import { eventKind, NostrFetcher } from "nostr-fetch";
 
 export default class nostr {
 
+    signer: NDKNip07Signer;
+
+    relays: string[];
+
+    relaysForSearch: string[];
+
+    ndk: NDK;
+
     constructor(_relays) {
 
         this.signer = new NDKNip07Signer();
@@ -21,23 +29,8 @@ export default class nostr {
             explicitRelayUrls: _relays
         });
 
-        this.ndk.pool.on("relay:connect", (r: NDKRelay) => { console.log(`Connected to relay ${r.url}`); });
-
-        this.ndk.pool.on("relay:published", (r) => { console.log(r); });
-
-        this.ndk.pool.on("relay:publish:failed ", (r) => { console.log(r); });
-
-        
+        this.ndk.pool.on("relay:connect", (r: NDKRelay) => { console.log(`Connected to relay ${r.url}`); });        
     }
-
-    async getLatestEventByAuthor() {
-        console.log("trying to get events")
-        const filter: NDKFilter = { kinds: [0, 1], publishsearch: "bitcoin" };
-        const event = await this.ndk.fetchEvents(filter, { closeOnEose: false });
-        console.log(event)
-        return event;
-    }
-
 
     async setUp(_onlineRelays) {
         //this.relays=_onlineRelays;
@@ -78,18 +71,22 @@ export default class nostr {
         // fetch all the text events (kind: 1) which match the search query and have posted in the last 24 hours
         try{
         const eventsIter = await fetcher.fetchAllEvents(
-            this.relaysForSearch,
+            this.relaysForSearch,//1
             {
-                kinds: [eventKind.text],
+                kinds: [eventKind.text],//2
                 search: wordQuery,
             },
-            {
-                since: nHoursAgo(24*30),//30 days of wagers
+            {//3
+                since: nHoursAgo(24*30),//30 days of wagers 
             },
-            {
+            { sort: true },//4
+            /*
+
+            {//4
                 skipVerification: true,
             },
-            { sort: true },
+
+            */
         );
         fetcher.shutdown();
         return eventsIter

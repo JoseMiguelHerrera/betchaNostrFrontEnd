@@ -6,9 +6,9 @@ import { useState, useEffect } from 'react'
 
 export default function SearchBox({nostrSubmit}) {
 
-    const [wager, setWager] = useState();
-    const [amount, setAmount] = useState();
-    const [expiry, setExpiry] = useState(new Date());
+    const [wager, setWager] = useState("");
+    const [amount, setAmount] = useState("");
+    const [expiry, setExpiry] = useState((Date.parse(new Date().toDateString())/1000));
 
     return (
         <form className="flex max-w-md flex-col gap-4">
@@ -34,7 +34,7 @@ export default function SearchBox({nostrSubmit}) {
                 </div>
                 <Datepicker minDate={new Date()} defaultDate={new Date()} onSelectedDateChanged={(dateString)=>{
                     console.log(dateString)
-                    const unixTime = Math.floor(Date.parse(dateString) / 1000);
+                    const unixTime = Math.floor(Date.parse(dateString.toDateString()) / 1000);
                     console.log(unixTime)
                     setExpiry(unixTime)
                 }}/>

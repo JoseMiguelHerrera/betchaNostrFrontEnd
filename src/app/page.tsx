@@ -1,13 +1,14 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { CircleSpinnerOverlay, RingSpinnerOverlay } from 'react-spinner-overlay'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Button } from "flowbite-react";
 
 import SearchBox from '@/app/components/SearchBox'
 import WagerList from '@/app/components/WagerList'
-import nostr from "@/nostr/nostr"
+import nostr from "@/app/nostr/nostr"
+
+//import { CircleSpinnerOverlay, RingSpinnerOverlay } from 'react-spinner-overlay'
 
 let ndk;
 export default function Home() {
@@ -61,7 +62,7 @@ export default function Home() {
     try {
       const rels = await ndk.publish(jsonToPublish);
       toast.success(`Wager published to NOSTR to ${rels.size} relays`)
-    } catch (e) {
+    } catch (e: any) {
       console.log(e)
       toast.error(e.toString())
     }
@@ -72,7 +73,10 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-start p-24">
       <ToastContainer />
 
-      <RingSpinnerOverlay loading={spinLoader} />
+    {/* typeof window !== undefined ?
+      <RingSpinnerOverlay loading={spinLoader} /> : <div></div>
+  */}
+
       <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
         <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
           $ betcha front end prototype $ <br /> Welcome {name} ({userName})

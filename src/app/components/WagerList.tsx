@@ -5,12 +5,11 @@ import { Button, Checkbox, Label, TextInput, Datepicker,Table } from "flowbite-r
 import { useState, useEffect } from 'react'
 
 export default function WagerList({nostr}) {
-    const [spinLoader, setSpinLoader] = useState(true);
 
-    const [results, setResults] = useState();
+    const [results, setResults] = useState([] as any[]);
 
     const cleanResults = (rawResults) => {
-      let results = [];
+      let results:any[] = [];
       rawResults.forEach((r)=>{
         const pubkey=r.pubkey;
         const content = (JSON.parse(r.content)).ibetchathat;
@@ -38,10 +37,9 @@ export default function WagerList({nostr}) {
           const searchResultsClean=cleanResults(searchResults)
           console.log(searchResultsClean)
           setResults(searchResultsClean)
-          setSpinLoader(false)
         }
         nostrSearch()
-      }, [])
+      }, [nostr])
 
       const createTableRows = (data) => {
         return data.map((item, index) => (
@@ -63,7 +61,7 @@ export default function WagerList({nostr}) {
 
       const unixTimeToDateString =(unixTime) =>{
         const date = new Date(unixTime * 1000); // Multiply by 1000 to convert seconds to milliseconds
-        const options = {
+        const options: Intl.DateTimeFormatOptions = {
           year: 'numeric',
           month: 'long',
           day: 'numeric',
