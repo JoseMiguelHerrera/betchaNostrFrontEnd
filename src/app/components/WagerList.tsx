@@ -3,10 +3,12 @@
 
 import { Button, Checkbox, Label, TextInput, Datepicker,Table } from "flowbite-react";
 import { useState, useEffect } from 'react'
+import LoadingOverlay from 'react-loading-overlay-ts';
 
 export default function WagerList({nostr}) {
 
     const [results, setResults] = useState([] as any[]);
+    const [spinLoader, setSpinLoader] = useState(true);
 
     const cleanResults = (rawResults) => {
       let results:any[] = [];
@@ -37,6 +39,7 @@ export default function WagerList({nostr}) {
           const searchResultsClean=cleanResults(searchResults)
           console.log(searchResultsClean)
           setResults(searchResultsClean)
+          setSpinLoader(false)
         }
         nostrSearch()
       }, [nostr])
@@ -74,6 +77,11 @@ export default function WagerList({nostr}) {
       }
 
       return (
+        <LoadingOverlay
+        active={spinLoader}
+        spinner
+        text='Loading NOSTR Data'
+      >
         <div className="overflow-x-auto">
           <Table striped>
             <Table.Head>
@@ -90,5 +98,6 @@ export default function WagerList({nostr}) {
             </Table.Body>
           </Table>
         </div>
+        </LoadingOverlay>
       );
 }

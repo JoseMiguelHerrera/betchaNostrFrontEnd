@@ -13,15 +13,15 @@ export default class nostr {
 
     ndk: NDK;
 
-    constructor(_relays) {
-
-        this.signer = new NDKNip07Signer();
+    constructor(_relays) {       
 
         this.relays=_relays;
-
         this.relaysForSearch=[
             "wss://relay.nostr.band"
         ]
+
+        this.signer = new NDKNip07Signer();
+
         this.ndk = new NDK({
             enableOutboxModel: false,
             signer: this.signer,
@@ -104,19 +104,26 @@ export default class nostr {
     */
 
     async getUserProfile() {
+        let userProfile;
+
         try{
-        const userProfile=await this.signer.user()
-        console.log(userProfile.npub)
-        const u = await this.ndk.getUser({
-            npub: userProfile.npub,
-        });
-        console.log(u)
-        await u.fetchProfile();
-        console.log(u.profile)
-        return u.profile;
+        userProfile=await this.signer.user()
         }catch(e){
-            console.log(e)
+            throw e
         }
+        if(userProfile){
+            console.log(userProfile.npub)
+            const u = await this.ndk.getUser({
+                npub: userProfile.npub,
+            });
+            console.log(u)
+            await u.fetchProfile();
+            console.log(u.profile)
+            return u.profile;
+        }else{
+            return null;
+        }
+        
     }
 
 
